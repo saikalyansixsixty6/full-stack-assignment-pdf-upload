@@ -33,40 +33,50 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <form className="formStyle" onSubmit={onSubmit}>
-        <h4>Upload Pdf in React</h4>
+   <div> 
+    <div className="flex flex-row justify-center">
+      <form className="flex-column justify-center border-solid border-slate-700 border-2 p-6" onSubmit={onSubmit}>
+        <h1 className='text-lg text-black font-bold text-center'>Upload Pdf in React</h1>
         <br />
         <input
           type="text"
-          className="form-control"
+          className="mt-2 p-2 border-2 border-black rounded-md my-2 w-100"
           placeholder="Title"
-          required
           onChange={(e) => setTitle(e.target.value)}
         />
         <br />
         <input
           type="file"
-          class="form-control"
+          className='mt-2 p-2 border-2 border-black rounded-md my-2 w-100'
           accept="application/pdf"
           required
           onChange={handleFileChange}
         />
         <br />
-        <button class="btn btn-primary" type="submit">
-          Submit
+        <button class="bg-blue-600 w-20 text-white rounded-sm font-bold p-2 text-center align-center" type="submit">
+          upload
         </button>
       </form>
-      
-      {pdfArrayBuffer && <PdfViewer pdfArrayBuffer={pdfArrayBuffer} />}
-      {pdfArrayBuffer && (
-        <PdfExtractor
-          pdfArrayBuffer={pdfArrayBuffer}
-          
-        />
-      )}
     </div>
-  );
+    <div className='flex justify-center'>
+    {pdfArrayBuffer && <PdfViewer pdfArrayBuffer={pdfArrayBuffer} />}
+    </div>
+    <div>
+    {pdfArrayBuffer && (
+      <PdfExtractor
+        pdfArrayBuffer={pdfArrayBuffer}/>)}
+    </div>
+   </div>
+
+
+
+    
+
+  
+
+    
+    
+      );
 }
 
 export default App;

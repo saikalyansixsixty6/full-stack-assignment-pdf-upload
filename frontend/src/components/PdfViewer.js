@@ -7,7 +7,7 @@ const PdfViewer = ({ pdfArrayBuffer }) => {
       });
       const docUrl = URL.createObjectURL(tempBlob);
   
-      return <iframe id="pdfFrame" title="PDF Viewer" src={docUrl} width="100%" height="500" />;
+      return <iframe id="pdfFrame" title="PDF Viewer" src={docUrl} width="70%" height="500" />;
     };
   
     return renderPdf();
