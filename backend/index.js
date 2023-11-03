@@ -2,15 +2,28 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
-const User = require('./models/user.model')
+const {User,PDFFile} = require('./models/user.model');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const multer = require("multer")
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+	  cb(null, "./assets");
+	},
+	filename: function (req, file, cb) {
+	  const uniqueSuffix = Date.now();
+	  cb(null, uniqueSuffix + file.originalname);
+	},
+  });
+
+const upload = multer({ storage: storage });
 
 app.use(cors())
 app.use(express.json())
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/fileupload-auth")
+.connect("mongodb://127.0.0.1:27017/fileupload-db")
   .then(() => {
     console.log("MongoDB connected");
   })
@@ -62,38 +75,33 @@ app.post('/api/login', async (req, res) => {
 	}
 })
 
-app.get('/api/quote', async (req, res) => {
-	const token = req.headers['x-access-token']
 
+
+app.post("/upload-files", upload.single("file"), async (req, res) => {
+	console.log(req.file);
+	const title = req.body.title;
+	const fileName = req.file.filename;
 	try {
-		const decoded = jwt.verify(token, 'secret123')
-		const email = decoded.email
-		const user = await User.findOne({ email: email })
-
-		return res.json({ status: 'ok', quote: user.quote })
+	  await PDFFile.create({ title: title, pdf: fileName });
+	  res.send({ status: "ok" });
 	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: 'invalid token' })
+	  res.json({ status: error });
 	}
-})
+});
 
-app.post('/api/quote', async (req, res) => {
-	const token = req.headers['x-access-token']
 
+app.get("/get-files", async (req, res) => {
 	try {
-		const decoded = jwt.verify(token, 'secret123')
-		const email = decoded.email
-		await User.updateOne(
-			{ email: email },
-			{ $set: { quote: req.body.quote } }
-		)
+	PDFFile.find({}).then((data) => {
+		res.send({ status: "ok", data: data });
+	  });
+	} catch (error) {}
+  });
 
-		return res.json({ status: 'ok' })
-	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: 'invalid token' })
-	}
-})
+
+app.get("/", async (req, res) => {
+	res.send("Success!!!!!!");
+});
 
 app.listen(9000, () => {
 	console.log('Server started on 9000')

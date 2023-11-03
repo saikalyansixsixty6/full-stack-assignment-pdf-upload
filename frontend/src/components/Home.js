@@ -1,25 +1,58 @@
 import { useState } from 'react';
-
-
 import PdfExtractor from './PdfExtractor';
 import PdfViewer from './PdfViewer';
+import axios from "axios";
 
 
 function Home() {
   const [pdfArrayBuffer, setPdfArrayBuffer] = useState(null);
-  const [title,setTitle] = useState("")
+  const [title,setTitle] = useState("");
+  const [file,setFile] = useState("");
   
-  const onSubmit = (e)=>{
-    e.preventDefault()
+  
+  
+  
+  const onSubmit = async (e) => {
+    e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("file", file);
+    console.log(title,file)
+  
+    try {
+      const result = await axios.post("http://localhost:9000/upload-files", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      if (result.data.status === "ok") {
+        alert("Uploaded Successfully!!!");
+      } else {
+        alert("File upload failed.");
+      }
+    } catch (error) {
+      console.error("Error uploading the file:", error);
+      alert("An error occurred while uploading the file.");
+    }
+  };
+
+  const wholehandle = (e)=>{
+    onChange(e);
+    handleFileChange(e);
+      
   }
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
+  const onChange = (e)=>{
+    setFile(e.target.files[0])
+  }
+  const handleFileChange = async(e) => {
+    const file = e.target.files[0]
+    
     if (file) {
       const arrayBuffer = await readAsyncFile(file);
       setPdfArrayBuffer(arrayBuffer);
     }
   };
-
+  
   const readAsyncFile = (file) => {
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
@@ -29,7 +62,16 @@ function Home() {
       reader.onerror = reject;
       reader.readAsArrayBuffer(file);
     });
-  };
+
+    
+
+  }
+
+  
+
+  
+
+
 
   return (
    <div> 
@@ -41,7 +83,7 @@ function Home() {
           type="text"
           className="mt-2 p-2 border-2 border-black rounded-md my-2 w-100"
           placeholder="Title"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e)=>setTitle(e.target.value)}
         />
         <br />
         <input
@@ -49,7 +91,8 @@ function Home() {
           className='mt-2 p-2 border-2 border-black rounded-md my-2 w-100'
           accept="application/pdf"
           required
-          onChange={handleFileChange}
+          onChange={wholehandle}
+          
         />
         <br />
         <button class="bg-blue-600 w-20 text-white rounded-sm font-bold p-2 text-center align-center" type="submit">
@@ -57,8 +100,10 @@ function Home() {
         </button>
       </form>
     </div>
+
+    
     <div className='flex justify-center'>
-    {pdfArrayBuffer && <PdfViewer pdfArrayBuffer={pdfArrayBuffer} />}
+    {pdfArrayBuffer&& < PdfViewer pdfArrayBuffer={pdfArrayBuffer}/>}
     </div>
     <div>
     {pdfArrayBuffer && (
