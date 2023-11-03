@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
 const pdfFileSchema = new mongoose.Schema({
 		pdf: String,
 		title: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
 },{collection:"pdfDetails"});
 
 // Create the models

@@ -42,21 +42,28 @@ function PdfExtractor({ pdfArrayBuffer }) {
   return (
     <div>
       {pdfDoc && (
-        <div>
-          <h2>Select pages to extract:</h2>
-          {Array.from({ length: pdfDoc.getPageCount() }).map((_, index) => (
-            <label key={index}>
-              <input
-                type="checkbox"
-                onChange={() => handlePageSelection(index + 1)}
-                checked={selectedPages.includes(index + 1)}
-              />
-              Page {index + 1}
-            </label>
-          ))}
-          <button onClick={handleExtraction}>Extract Selected Pages</button>
-        </div>
-      )}
+  <div className="mt-4">
+    <h2 className="text-xl font-bold">Select pages to extract:</h2>
+    {Array.from({ length: pdfDoc.getPageCount() }).map((_, index) => (
+      <label key={index} className="flex items-center mt-2">
+        <input
+          type="checkbox"
+          onChange={() => handlePageSelection(index + 1)}
+          checked={selectedPages.includes(index + 1)}
+          className="mr-2"
+        />
+        Page {index + 1}
+      </label>
+    ))}
+    <button
+      onClick={handleExtraction}
+      className="mt-4 bg-blue-600 text-white rounded-md p-2 text-center font-semibold"
+    >
+      Extract Selected Pages
+    </button>
+  </div>
+)}
+
     </div>
   );
 }

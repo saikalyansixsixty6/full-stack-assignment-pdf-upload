@@ -1,13 +1,31 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import PdfExtractor from './PdfExtractor';
 import PdfViewer from './PdfViewer';
 import axios from "axios";
+import Navbar from './Navbar';
+import { usePdfContext } from '../context/PdfContext';
+
+
+
 
 
 function Home() {
   const [pdfArrayBuffer, setPdfArrayBuffer] = useState(null);
   const [title,setTitle] = useState("");
   const [file,setFile] = useState("");
+  const {allPdfs,setAllPdfs} = usePdfContext()
+
+  
+  const getPdf = async () => {
+    const result = await axios.get("http://localhost:9000/get-files");
+    const pdfData = Array.isArray(result.data.data) ? result.data.data : [result.data.data];
+
+    setAllPdfs(pdfData);
+    
+  };
+  useEffect(()=>{
+    getPdf()
+  },[])
   
   
   
@@ -18,7 +36,7 @@ function Home() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("file", file);
-    console.log(title,file)
+    // console.log(title,file)
   
     try {
       const result = await axios.post("http://localhost:9000/upload-files", formData, {
@@ -27,6 +45,7 @@ function Home() {
   
       if (result.data.status === "ok") {
         alert("Uploaded Successfully!!!");
+        setTitle("")
       } else {
         alert("File upload failed.");
       }
@@ -70,47 +89,54 @@ function Home() {
   
 
   
-
+  
 
 
   return (
-   <div> 
-    <div className="flex flex-row justify-center">
-      <form className="flex-column justify-center border-solid border-slate-700 border-2 p-6" onSubmit={onSubmit}>
-        <h1 className='text-lg text-black font-bold text-center'>Upload Pdf in React</h1>
-        <br />
-        <input
-          type="text"
-          className="mt-2 p-2 border-2 border-black rounded-md my-2 w-100"
-          placeholder="Title"
-          onChange={(e)=>setTitle(e.target.value)}
-        />
-        <br />
-        <input
-          type="file"
-          className='mt-2 p-2 border-2 border-black rounded-md my-2 w-100'
-          accept="application/pdf"
-          required
-          onChange={wholehandle}
-          
-        />
-        <br />
-        <button class="bg-blue-600 w-20 text-white rounded-sm font-bold p-2 text-center align-center" type="submit">
-          upload
-        </button>
-      </form>
-    </div>
-
     
-    <div className='flex justify-center'>
-    {pdfArrayBuffer&& < PdfViewer pdfArrayBuffer={pdfArrayBuffer}/>}
-    </div>
-    <div>
-    {pdfArrayBuffer && (
-      <PdfExtractor
-        pdfArrayBuffer={pdfArrayBuffer}/>)}
-    </div>
-   </div>
+   <div> 
+    <Navbar/>
+    <div className="flex flex-col items-center">
+  <form className="w-full lg:w-2/3 border border-solid border-gray-700 p-6" onSubmit={onSubmit}>
+    <h1 className="text-lg font-bold text-center">Upload PDF in React</h1>
+    <input
+      type="text"
+      className="mt-4 p-2 border border-gray-700 rounded-md my-2 w-full"
+      placeholder="Title"
+      onChange={(e) => setTitle(e.target.value)}
+    />
+    <input
+      type="file"
+      className="mt-2 p-2 border border-gray-700 rounded-md my-2 w-full"
+      accept="application/pdf"
+      required
+      onChange={wholehandle}
+    />
+    <button className="bg-blue-600 w-20 text-white rounded-md font-bold p-2 text-center" type="submit">
+      Upload
+    </button>
+  </form>
+  <div className="w-full lg:w-2/3 mt-4">
+    {pdfArrayBuffer && <PdfViewer pdfArrayBuffer={pdfArrayBuffer} />}
+  </div>
+  <div className="w-full lg:w-2/3 mt-4">
+    {pdfArrayBuffer && <PdfExtractor pdfArrayBuffer={pdfArrayBuffer} />}
+  </div>
+  {allPdfs === null
+  ? ""
+  : allPdfs.map((data, index) => (
+      <div className="border border-solid border-gray-700 p-4 my-4" key={index}>
+        <h6 className="font-bold text-lg">Title: {data.title}</h6>
+        <h6 className="text-gray-600">Filename: {data.pdf}</h6>
+        <button className="bg-blue-600 text-white rounded-md p-2 text-center mt-2">
+          Show PDF
+        </button>
+      </div>
+    ))}
+
+  </div>
+</div>
+
 
 
 

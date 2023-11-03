@@ -5,6 +5,7 @@ import Signup from './components/authentication/Signup';
 import Login from './components/authentication/Login';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UploadedFiles from './components/UploadedFiles';
+import { PdfContextProvider } from './context/PdfContext';
 
 
 
@@ -14,6 +15,7 @@ function App() {
   
   return (
    <>
+   <PdfContextProvider>
       <div className="App">
       <Router>
         <Routes>
@@ -24,6 +26,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+    </PdfContextProvider>
    </>
 
 

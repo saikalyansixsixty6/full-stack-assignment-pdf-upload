@@ -23,7 +23,7 @@ app.use(cors())
 app.use(express.json())
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/fileupload-db")
+.connect("mongodb://127.0.0.1:27017/fileupload-data")
   .then(() => {
     console.log("MongoDB connected");
   })
