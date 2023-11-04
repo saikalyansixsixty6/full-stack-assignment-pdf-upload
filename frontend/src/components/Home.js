@@ -14,38 +14,40 @@ function Home() {
   const [title,setTitle] = useState("");
   const [file,setFile] = useState("");
   const {allPdfs,setAllPdfs} = usePdfContext()
-
   
-  const getPdf = async () => {
-    const result = await axios.get("http://localhost:9000/get-files");
-    const pdfData = Array.isArray(result.data.data) ? result.data.data : [result.data.data];
-
-    setAllPdfs(pdfData);
-    
-  };
   useEffect(()=>{
     getPdf()
   },[])
+
+
+    const getPdf = async () => {
+    const result = await axios.get("http://localhost:9000/get-files");
+    
+
+    setAllPdfs(result.data.data);
+    
+  };
   
   
   
   
-  const onSubmit = async (e) => {
+  
+  async function onSubmit(e) {
     e.preventDefault();
-  
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("file", file);
     // console.log(title,file)
-  
     try {
       const result = await axios.post("http://localhost:9000/upload-files", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (result.data.status === "ok") {
         alert("Uploaded Successfully!!!");
-        setTitle("")
+        setTitle("");
+        getPdf()
       } else {
         alert("File upload failed.");
       }
@@ -53,6 +55,11 @@ function Home() {
       console.error("Error uploading the file:", error);
       alert("An error occurred while uploading the file.");
     }
+  }
+
+  const showPdf = (pdf) => {
+    window.open(`http://localhost:9000/assets/${pdf}`, "_blank", "noreferrer");
+    
   };
 
   const wholehandle = (e)=>{
@@ -122,13 +129,11 @@ function Home() {
   <div className="w-full lg:w-2/3 mt-4">
     {pdfArrayBuffer && <PdfExtractor pdfArrayBuffer={pdfArrayBuffer} />}
   </div>
-  {allPdfs === null
-  ? ""
-  : allPdfs.map((data, index) => (
+  {allPdfs && allPdfs.map((data, index) => (
       <div className="border border-solid border-gray-700 p-4 my-4" key={index}>
         <h6 className="font-bold text-lg">Title: {data.title}</h6>
         <h6 className="text-gray-600">Filename: {data.pdf}</h6>
-        <button className="bg-blue-600 text-white rounded-md p-2 text-center mt-2">
+        <button className="bg-blue-600 text-white rounded-md p-2 text-center mt-2" onClick={() => showPdf(data.pdf)}>
           Show PDF
         </button>
       </div>
