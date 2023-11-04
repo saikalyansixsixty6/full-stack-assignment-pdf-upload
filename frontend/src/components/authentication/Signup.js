@@ -1,36 +1,41 @@
 
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
   const navigate = useNavigate();
   
-  const [name,setName] = useState("")
+  // State variables to store user input
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Function to handle user registration
   async function registerUser(event) {
-		event.preventDefault()
+    event.preventDefault();
 
-		const response = await fetch('http://localhost:9000/api/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name,
-				email,
-				password,
-			}),
-		})
+    // Send a POST request to the server for user registration
+    const response = await fetch("http://localhost:9000/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
 
-		const data = await response.json()
+    // Parse the response data
+    const data = await response.json();
 
-		if (data.status === 'ok') {
-			navigate('/')
-		}
-	}
+    if (data.status === "ok") {
+      // If registration is successful, navigate to the login page
+      navigate("/");
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-400">
@@ -38,11 +43,11 @@ function Signup() {
         <h1 className="text-3xl text-center font-semibold mb-4">Signup</h1>
 
         <form onSubmit={registerUser}>
-        <input
+          <input
             type="text"
             value={name}
             onChange={(e) => {
-              setName(e.target.value)
+              setName(e.target.value);
             }}
             placeholder="Username"
             className="w-full p-2 mb-4 border rounded-md"
@@ -68,7 +73,6 @@ function Signup() {
 
           <button
             type="submit"
-            
             className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
           >
             Signup

@@ -12,6 +12,7 @@ function PdfExtractor({ pdfArrayBuffer }) {
     });
   }
 
+  // Function to handle page selection (checkbox)
   const handlePageSelection = (pageNumber) => {
     if (selectedPages.includes(pageNumber)) {
       setSelectedPages(selectedPages.filter((page) => page !== pageNumber));
@@ -20,6 +21,7 @@ function PdfExtractor({ pdfArrayBuffer }) {
     }
   };
 
+  // Function to extract and download selected pages as a new PDF
   const handleExtraction = async () => {
     if (pdfDoc && selectedPages.length > 0) {
       const newPdfDoc = await PDFDocument.create();
@@ -31,10 +33,14 @@ function PdfExtractor({ pdfArrayBuffer }) {
       const newPdfBytes = await newPdfDoc.save();
       const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
+
+      // Create a hidden anchor element and trigger the download
       const a = document.createElement('a');
       a.href = url;
       a.download = 'extracted.pdf';
       a.click();
+
+      // Revoke the URL to release the object URL resource
       URL.revokeObjectURL(url);
     }
   };
@@ -42,28 +48,27 @@ function PdfExtractor({ pdfArrayBuffer }) {
   return (
     <div>
       {pdfDoc && (
-  <div className="mt-4">
-    <h2 className="text-xl font-bold">Select pages to extract:</h2>
-    {Array.from({ length: pdfDoc.getPageCount() }).map((_, index) => (
-      <label key={index} className="flex items-center mt-2">
-        <input
-          type="checkbox"
-          onChange={() => handlePageSelection(index + 1)}
-          checked={selectedPages.includes(index + 1)}
-          className="mr-2"
-        />
-        Page {index + 1}
-      </label>
-    ))}
-    <button
-      onClick={handleExtraction}
-      className="mt-4 bg-blue-600 text-white rounded-md p-2 text-center font-semibold"
-    >
-      Extract Selected Pages
-    </button>
-  </div>
-)}
-
+        <div className="mt-4">
+          <h2 className="text-xl font-bold">Select pages to extract:</h2>
+          {Array.from({ length: pdfDoc.getPageCount() }).map((_, index) => (
+            <label key={index} className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                onChange={() => handlePageSelection(index + 1)}
+                checked={selectedPages.includes(index + 1)}
+                className="mr-2"
+              />
+              Page {index + 1}
+            </label>
+          ))}
+          <button
+            onClick={handleExtraction}
+            className="mt-4 bg-blue-600 text-white rounded-md p-2 text-center font-semibold"
+          >
+            Extract & download
+          </button>
+        </div>
+      )}
     </div>
   );
 }
