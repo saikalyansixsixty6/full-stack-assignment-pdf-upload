@@ -52,7 +52,7 @@ This is a simple web application for managing PDF files. Users can upload, view,
 
 ## Preview of this app
 - Signup with name,email and password
-- ![Screenshot (571)](https://github.com/saikalyansixsixty6/full-stack-assignment-pdf-upload/assets/91243096/eb013358-6302-4d7c-8411-ce5a550e2520)
+- ![Screenshot (578)](https://github.com/saikalyansixsixty6/full-stack-assignment-pdf-upload/assets/91243096/f3155425-0bbd-49db-bb7d-11ebc563efb4)
 - Then login into account
 - ![Screenshot (570)](https://github.com/saikalyansixsixty6/full-stack-assignment-pdf-upload/assets/91243096/316ebd21-c74e-4ee3-9d83-bc7547a6b98d)
 - Give name of the file name and select the want to upload
