@@ -25,7 +25,7 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect('mongodb://127.0.0.1:27017/fileupload-data')
+  .connect('mongodb://127.0.0.1:27017/fileupload-database')
   .then(() => {
     console.log('MongoDB connected');
   })
