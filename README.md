@@ -35,7 +35,8 @@ This is a simple web application for managing PDF files. Users can upload, view,
 
 5. Start the frontend development server using `npm start` in the frontend directory.
 
-6. Access the application in your web browser at `http://localhost:3000`.
+6. Access the application in your web browser at https://frontend-part-pdf.vercel.app/
+
 
 ## Usage
 
